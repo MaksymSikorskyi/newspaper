@@ -1,0 +1,9 @@
+-r requirements.txt
+
+Werkzeug
+
+pytest
+pytest-cov
+black
+flake8
+isort
