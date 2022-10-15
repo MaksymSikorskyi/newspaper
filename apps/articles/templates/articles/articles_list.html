@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Articles" %}{% endblock title %}
+
+{% block content %}
+  <h1>{% trans "Articles" %}</h1>
+
+  {% for article in articles %}
+    <div class="my-4 row">
+      <div class="col-3">
+        {% if article.main_image %}
+          <img
+            class="img-thumbnail"
+            src="{{ article.main_image_thumbnail.url }}"
+            alt="{{ article.title }}"
+          />
+        {% endif %}
+      </div>
+      <div class="col-9">
+        <h3>{{ article.title }}</h3>
+        <div class="mb-2 d-flex flex-row align-items-center gap-2">
+          <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
+          <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
+
+          {% if article.tags.count %}
+            {% for tag in article.tags.all %}
+              <span class="mb-0 h6">#{{ tag.name }}</span>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <p>{{ article.short_content }}</p>
+      </div>
+    </div>
+
+    {% if not forloop.last %}
+      <hr class="border-top border-dark" />
+    {% endif %}
+  {% endfor %}
+{% endblock content %}
