@@ -1,0 +1,95 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load django_bootstrap5 %}
+
+{% block head_title %}{% trans "E-mail addresses" %}{% endblock %}
+
+{% block content %}
+  <h1>
+    {{ user.username | title }}
+    <small class="h4 text-muted">{% trans "E-mail addresses" %}</small>
+  </h1>
+
+  {% include 'users/partials/navigation.html' with active_tab="change_email" %}
+
+  <div class="row justify-content-center">
+    <div class="col col-md-4">
+      {% if user.emailaddress_set.all %}
+        <p>{% trans 'The following e-mail addresses are associated with your account:' %}</p>
+
+        <form action="{% url 'account_email' %}" class="email_list" method="post">
+          {% csrf_token %}
+
+          <fieldset class="blockLabels">
+            {% for emailaddress in user.emailaddress_set.all %}
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="email"
+                  id="id-email-radio-{{ forloop.counter }}"
+                  {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %}
+                  value="{{ emailaddress.email }}"
+                />
+                <label
+                  class="form-check-label {% if emailaddress.primary %}primary_email{%endif%}"
+                  for="id-email-radio-{{ forloop.counter }}"
+                >
+                  {{ emailaddress.email }}
+
+                  {% if emailaddress.verified %}
+                    <span class="text-success">{% trans "Verified" %}</span>
+                  {% else %}
+                    <span class="text-warning">{% trans "Unverified" %}</span>
+                  {% endif %}
+
+                  {% if emailaddress.primary %}<span class="text-primary">{% trans "Primary" %}</span>{% endif %}
+                </label>
+              </div>
+            {% endfor %}
+
+            <div class="mt-2">
+              <button class="btn btn-primary btn-sm" type="submit" name="action_primary" >{% trans 'Make Primary' %}</button>
+              <button class="btn btn-info btn-sm" type="submit" name="action_send" >{% trans 'Re-send Verification' %}</button>
+              <button class="btn btn-warning btn-sm" type="submit" name="action_remove" >{% trans 'Remove' %}</button>
+            </div>
+          </fieldset>
+        </form>
+      {% else %}
+        <p><strong>{% trans 'Warning:'%}</strong> {% trans "You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc." %}</p>
+      {% endif %}
+
+      {% if can_add_email %}
+        <h2 class="mt-4">{% trans "Add email address" %}</h2>
+
+        <form method="post" action="{% url 'account_email' %}" class="add_email">
+            {% csrf_token %}
+
+            {% bootstrap_form form %}
+
+            <div class="mt-2">
+              <button class="btn btn-primary" name="action_add" type="submit">{% trans "Add email" %}</button>
+            </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_body %}
+<script type="text/javascript">
+(function() {
+  const message = "{% trans 'Do you really want to remove the selected e-mail address?' %}";
+  const actions = document.getElementsByName('action_remove');
+
+  if (actions.length) {
+    actions[0].addEventListener("click", function(e) {
+      if (!confirm(message)) {
+        e.preventDefault();
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

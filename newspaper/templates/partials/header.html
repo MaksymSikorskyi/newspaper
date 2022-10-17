@@ -12,12 +12,21 @@
         <li class="nav-item"><a href="#" class="nav-link link-dark px-2">About</a></li>
       </ul>
       <ul class="nav">
-        <li class="nav-item">
-          <a href="{% url 'account_login' %}" class="nav-link link-dark px-2">Login</a>
-        </li>
-        <li class="nav-item">
-          <a href="{% url 'account_signup' %}" class="nav-link link-dark px-2">Sign up</a>
-        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'users:profile' %}" class="nav-link link-dark px-2">{% trans "Profile" %}</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'account_logout' %}" class="nav-link link-dark px-2">{% trans "Logout" %}</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a href="{% url 'account_login' %}" class="nav-link link-dark px-2">{% trans "Login" %}</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'account_signup' %}" class="nav-link link-dark px-2">{% trans "Sign up" %}</a>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </nav>

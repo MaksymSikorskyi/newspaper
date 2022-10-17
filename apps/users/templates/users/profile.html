@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ current_user.username | title }}{% endblock title %}
+
+{% block content %}
+  <h1>
+    {{ current_user.username | title }}
+    <small class="h4 text-muted">{% trans "Profile" %}</small>
+  </h1>
+
+  {% include 'users/partials/navigation.html' with active_tab="profile" %}
+
+  <div class="row justify-content-center">
+    <div class="col col-md-4">
+      <p>
+        <strong>Username: </strong> {{ current_user.username }}
+      </p>
+      <p>
+        <strong>Email: </strong> {{ current_user.email }}
+      </p>
+      <p>
+        <strong>Name: </strong> {{ current_user.get_full_name }}
+      </p>
+    </div>
+  </div>
+{% endblock content %}

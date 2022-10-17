@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # Project apps
     "apps.articles",
     "apps.pages",
+    "apps.users",
 ]
 
 MIDDLEWARE = [

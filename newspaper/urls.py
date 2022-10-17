@@ -24,4 +24,5 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("", include("apps.pages.urls")),
     path("articles/", include("apps.articles.urls")),
+    path("accounts/", include("apps.users.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
