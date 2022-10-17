@@ -1,0 +1,38 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load django_bootstrap5 %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col col-md-3">
+    <h1>{% trans "Sign Up" %}</h1>
+
+    <p>{% trans "Please sign up for a new account" %}</p>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+
+      {% bootstrap_form form layout="floating" %}
+
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
+      </div>
+    </form>
+
+    <div class="mt-2 d-grid gap-2">
+      <p>
+        {% trans "Already have an account?" %}
+        <a href="{{ login_url }}">Sign in</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
