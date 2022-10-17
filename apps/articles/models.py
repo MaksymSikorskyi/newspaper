@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from slugify import slugify
 from taggit.managers import TaggableManager
+# imagekit imports
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
@@ -59,6 +60,7 @@ class Article(models.Model):
 
     tags = TaggableManager()
 
+    # small imege settings, from imagekit dependency
     main_image_thumbnail = ImageSpecField(
         source="main_image",
         processors=[ResizeToFill(450, 300)],
