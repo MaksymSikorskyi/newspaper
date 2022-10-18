@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ article.title }}{% endblock title %}
+
+{% block extra_head %}
+<style>
+  .text-justify {
+    text-align: justify;
+  }
+</style>
+{% endblock extra_head %}
+
+{% block content %}
+  <h1>{{ article.title }}</h1>
+
+  <div class="mt-4 d-flex flex-row align-items-center gap-2">
+    <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
+    <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
+
+    {% if article.tags.count %}
+      {% for tag in article.tags.all %}
+        <span class="mb-0 h6">#{{ tag.name }}</span>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <p class="mt-4 lead text-justify">
+    {{ article.short_content }}
+  </p>
+
+  {% if article.main_image %}
+    <div class="mt-4">
+      <img
+        class="img-thumbnail mx-auto d-block"
+        src="{{ article.main_image_medium.url }}"
+        alt="{{ article.title }}"
+      />
+    </div>
+  {% endif %}
+
+  <div class="mt-4 text-justify">
+    {{ article.content | safe }}
+  </div>
+{% endblock %}

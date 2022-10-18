@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-    <h1>Wellcome to the Newspaper</h1>
+  <section class="mt-2">
+    <h2>{% trans "Featured articles" %}</h2>
+
+    <div class="row">
+      {% for article in featured_articles %}
+        <div class="col-12 col-md-4">
+          <div class="card">
+            <img src="{{ article.main_image_medium.url }}" class="card-img-top" alt="{{ article.title }}" />
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+              </h5>
+              <p class="card-text">{{ article.short_content | truncatechars:140 }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
 {% endblock content %}
