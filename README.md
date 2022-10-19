@@ -2,7 +2,7 @@
 
 - [ ] Static and dynamic pages
     - [x] Home page, articles
-    - [ ] Terms, about, contacts (optional)
+    - [x] Terms, about, contacts (optional)
 - [x] Articles
     - [x] Rich-text content
     - [ ] Main image and attached image gallery
