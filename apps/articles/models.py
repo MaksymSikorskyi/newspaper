@@ -8,6 +8,16 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 
+class PublishedArticlesManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(published_at__isnull=False)
+            .order_by("-published_at")
+        )
+
+
 class Category(models.Model):
     name = models.CharField(_("name"), max_length=100)
     slug = AutoSlugField(populate_from="name", unique=True, slugify_function=slugify)
@@ -59,6 +69,8 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
     tags = TaggableManager()
+    objects = models.Manager()
+    published = PublishedArticlesManager()
     main_image_thumbnail = ImageSpecField(
         source="main_image",
         processors=[ResizeToFill(450, 300)],

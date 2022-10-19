@@ -4,8 +4,12 @@ from apps.articles.models import Article
 
 
 def index(request):
-    featured_articles = Article.objects.filter(
-        published_at__isnull=False, is_featured=True
-    ).order_by("-published_at")[:3]
+    featured_articles = Article.published.filter(is_featured=True)[:3]
 
-    return render(request, "pages/index.html", {"featured_articles": featured_articles})
+    latest_articles = Article.published.all()[:5]
+
+    return render(
+        request,
+        "pages/index.html",
+        {"featured_articles": featured_articles, "latest_articles": latest_articles},
+    )
