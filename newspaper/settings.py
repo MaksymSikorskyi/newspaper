@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "apps.articles",
     "apps.pages",
     "apps.users",
+    "apps.comments",
 ]
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",

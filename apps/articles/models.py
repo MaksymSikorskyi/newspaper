@@ -96,6 +96,17 @@ class Article(models.Model):
             self.pk, self.title, self.published_at, self.created_at
         )
 
+    @property
+    def has_images(self):
+        return self.images.count() > 0
+
+    @property
+    def comments_count(self):
+        return self.comments.count()
+
+    def get_comments(self):
+        return self.comments.order_by("-created_at")
+
     def get_absolute_url(self):
         if self.published_at is None:
             return reverse("articles:list")
@@ -108,4 +119,41 @@ class Article(models.Model):
                 "month": self.published_at.month,
                 "day": self.published_at.day,
             },
+        )
+
+
+class ArticleImage(models.Model):
+    article = models.ForeignKey(
+        Article,
+        verbose_name=_("article"),
+        on_delete=models.CASCADE,
+        db_index=True,
+        related_name="images",
+    )
+    title = models.CharField(_("title"), max_length=100, blank=True, null=True)
+    image = models.ImageField(
+        _("image"),
+        max_length=300,
+        upload_to="articles/images/%Y/%m",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    image_thumbnail = ImageSpecField(
+        source="image",
+        processors=[ResizeToFill(450, 300)],
+        format="JPEG",
+        options={"quality": 80},
+    )
+
+    class Meta:
+        verbose_name = _("article image")
+        verbose_name_plural = _("article images")
+
+    def __str__(self) -> str:
+        return self.title if self.title else f"Article image #{self.pk}"
+
+    def __repr__(self) -> str:
+        return "<ArticleImage id={} article={} image={} created_at={}>".format(
+            self.pk, self.article_id, self.image, self.created_at
         )

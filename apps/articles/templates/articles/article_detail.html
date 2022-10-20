@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
+{% load django_bootstrap5 %}
 
 {% block title %}{{ article.title }}{% endblock title %}
+
+
+
+
+
+
+
+
+
+    @@ -11,6 +12,10 @@
 
 {% block extra_head %}
 <style>
@@ -11,24 +22,40 @@
 </style>
 {% endblock extra_head %}
 
+{% block extra_body %}
+  <script src="{% static 'js/fslightbox.js' %}"></script>
+{% endblock extra_body %}
+
 {% block content %}
   <h1>{{ article.title }}</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @@ -42,4 +47,69 @@ <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
 
   <div class="mt-4 d-flex flex-row align-items-center gap-2">
     <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
     <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
-
     {% if article.tags.count %}
       {% for tag in article.tags.all %}
         <span class="mb-0 h6">#{{ tag.name }}</span>
       {% endfor %}
     {% endif %}
   </div>
-
   <p class="mt-4 lead text-justify">
     {{ article.short_content }}
   </p>
-
   {% if article.main_image %}
     <div class="mt-4">
       <img
@@ -38,8 +65,72 @@
       />
     </div>
   {% endif %}
-
   <div class="mt-4 text-justify">
     {{ article.content | safe }}
   </div>
+
+  {% if article.has_images %}
+    <div class="mt-4 row row-cols-1 row-cols-md-3 row-cols-lg-4 gy-3">
+      {% for article_image in article.images.all %}
+        <div class="col">
+          <a href="{{ article_image.image.url }}" data-fslightbox="images">
+            <img
+              class="img-fluid rounded"
+              src="{{ article_image.image_thumbnail.url }}"
+              alt="{{ article_image }}"
+            />
+          </a>
+          <span>{{ article_image }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <section class="mt-5">
+    <h3>{% trans "Comments" %} ({{ article.comments_count }})</h3>
+
+    <hr />
+
+    <div>
+      {% if user.is_authenticated %}
+        <div class="row">
+          <div class="col-12 col-lg-6">
+            <form method="post" class="form">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              {% bootstrap_button button_type="submit" content="Add comment" %}
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <p class="text-center text-muted">
+          {% trans "Please login or register to leave a comment" %}
+        </p>
+      {% endif %}
+    </div>
+
+    <div class="mt-4">
+      {% for comment in article.get_comments %}
+        <div class="mt-3 d-flex">
+          <div class="flex-shrink-0">
+            <img
+              class="img-fluid rounded"
+              width="80"
+              src="{% static 'img/placeholder-user.jpg' %}"
+              alt="{{ comment.user }}"
+            />
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <p class="mb-1 text-muted">
+              <strong>{{ comment.user_name }}</strong>
+              <time>{{ comment.created_at | timesince }} ago</time>
+            </p>
+            <p>
+              {{ comment.message }}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
 {% endblock %}

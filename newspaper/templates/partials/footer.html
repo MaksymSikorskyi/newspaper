@@ -26,13 +26,22 @@
                 <a href="{% url 'pages:index' %}" class="nav-link p-0 text-muted">{% trans "Home" %}</a>
               </li>
               <li class="nav-item mb-2">
-                <a href="{% url 'django.contrib.flatpages.views.flatpage' 'terms/' %}" class="nav-link p-0 text-muted">Terms</a>
+                <a href="{% url 'django.contrib.flatpages.views.flatpage' 'terms/' %}" class="nav-link p-0 text-muted">{% trans "Terms & Conditions" %}</a>
               </li>
               <li class="nav-item mb-2">
-                <a href="{% url 'django.contrib.flatpages.views.flatpage' 'about/' %}" class="nav-link p-0 text-muted">About us</a>
+                <a href="{% url 'django.contrib.flatpages.views.flatpage' 'about/' %}" class="nav-link p-0 text-muted">{% trans "About" %}</a>
               </li>
             </ul>
           </div>
+
+
+
+
+
+
+
+
+
 
           <div class="col-6 col-md-2 mb-3">
             <h5>{% trans "Categories" %}</h5>
@@ -45,7 +54,6 @@
               </li>
             </ul>
           </div>
-
           <div class="col-6 col-md-2 mb-3"></div>
           <div class="col-md-5 offset-md-1 mb-3">
             <form>
