@@ -34,8 +34,8 @@ class ArticleAdmin(SummernoteModelAdmin):
         "slug",
         "published_at",
         "is_featured",
+        "view_count",
         "created_at",
-        "updated_at",
     )
     list_filter = ("category", "is_featured", "published_at", "created_at")
     readonly_fields = ("slug", "created_at", "updated_at")

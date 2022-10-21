@@ -1,39 +1,72 @@
-{% extends 'base.html' %}
+{{% extends 'base.html' %}
 {% load i18n %}
+{% load articles_tags %}
+
 {% block title %}{% trans "Articles" %}{% endblock title %}
+
 {% block content %}
-  <h1>{% trans "Articles" %}</h1>
-  {% for article in articles %}
-    <div class="my-4 row">
-      <div class="col-3">
-        {% if article.main_image %}
-          <a href="{{ article.get_absolute_url }}">
-            <img
-              class="img-thumbnail"
-              src="{{ article.main_image_thumbnail.url }}"
-              alt="{{ article.title }}"
-            />
-          </a>
-        {% endif %}
-      </div>
-      <div class="col-9">
-        <h3>
-          <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-        </h3>
-        <div class="mb-2 d-flex flex-row align-items-center gap-2">
-          <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
-          <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
-          {% if article.tags.count %}
-            {% for tag in article.tags.all %}
-              <span class="mb-0 h6">#{{ tag.name }}</span>
-            {% endfor %}
-          {% endif %}
+  <h1>
+    {% trans "Articles" %}
+    {% if category %}<small class="h3 text-muted">({{ category.name }})</small>{% endif %}
+    {% if tag %}<small class="h3 text-muted">(#{{ tag.name }})</small>{% endif %}
+  </h1>
+
+  <div class="row">
+    <div class="col-12 col-md-9">
+      {% for article in articles %}
+        <div class="my-4 row">
+          <div class="col-3">
+            {% if article.main_image %}
+              <a href="{{ article.get_absolute_url }}">
+                <img
+                  class="img-thumbnail"
+                  src="{{ article.main_image_thumbnail.url }}"
+                  alt="{{ article.title }}"
+                />
+              </a>
+            {% endif %}
+          </div>
+          <div class="col-9">
+            <h3>
+              <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+            </h3>
+            <div class="mb-2 d-flex flex-row align-items-center gap-2">
+              <h6 class="mb-0 text-primary">
+                <a href="{{ article.category.get_absolute_url }}" class="text-decoration-none">
+                  {{ article.category.name }}</a>
+              </h6>
+              <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
+
+              {% if article.tags.count %}
+                {% for tag in article.tags.all %}
+                  <a href="{% url 'articles:by-tag' tag.slug %}" class="mb-0 h6 text-secondary text-decoration-none">#{{ tag.name }}</a>
+                {% endfor %}
+              {% endif %}
+
+              <p class="mb-0 h6 text-black-50 d-flex align-items-center">
+                <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                  <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="ms-1">{{ article.view_count | default:1 }}</span>
+              </p>
+            </div>
+            <p>{{ article.short_content }}</p>
+          </div>
         </div>
-        <p>{{ article.short_content }}</p>
+
+        {% if not forloop.last %}
+          <hr class="border-top border-dark border-opacity-25" />
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="col-12 col-md-3">
+      {% render_categories_list %}
+
+      <div class="mt-4">
+        {% render_tags_cloud %}
       </div>
     </div>
-    {% if not forloop.last %}
-      <hr class="border-top border-dark border-opacity-25" />
-    {% endif %}
-  {% endfor %}
+  </div>
 {% endblock content %}

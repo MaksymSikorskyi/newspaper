@@ -20,12 +20,15 @@
   <h1>{{ article.title }}</h1>
 
   <div class="mt-4 d-flex flex-row align-items-center gap-2">
-    <h6 class="mb-0 text-primary">{{ article.category.name }}</h6>
+    <h6 class="mb-0 text-primary">
+      <a href="{{ article.category.get_absolute_url }}" class="text-decoration-none">
+        {{ article.category.name }}</a>
+    </h6>
     <time class="mb-0 text-muted h6">{{ article.published_at | date }}</time>
 
     {% if article.tags.count %}
       {% for tag in article.tags.all %}
-        <span class="mb-0 h6">#{{ tag.name }}</span>
+        <a href="{% url 'articles:by-tag' tag.slug %}" class="mb-0 h6 text-secondary text-decoration-none">#{{ tag.name }}</a>
       {% endfor %}
     {% endif %}
   </div>

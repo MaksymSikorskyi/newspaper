@@ -1,0 +1,26 @@
+{% load i18n %}
+<aside>
+  <h4>Categories</h4>
+
+  <div class="list-group list-group-flush">
+    {% if show_all %}
+      <a
+        href="{% url 'articles:list' %}"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start {% if active_category_id == 0 %} active {% endif %}"
+      >
+        <span>{% trans "All articles" %}</span>
+        <span class="badge bg-primary rounded-pill">{{ total_articles }}</span>
+      </a>
+    {% endif %}
+
+    {% for category in categories %}
+      <a
+        href="{{ category.get_absolute_url }}"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-start {% if active_category_id == category.pk %} active {% endif %}"
+      >
+        <span>{{ category.name }}</span>
+        <span class="badge bg-primary rounded-pill">{{ category.acticles_count }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</aside>

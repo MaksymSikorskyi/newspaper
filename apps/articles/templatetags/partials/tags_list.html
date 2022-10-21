@@ -1,0 +1,7 @@
+<aside class="h5">
+  {% for tag in tags %}
+    <a href="{% url 'articles:by-tag' tag.slug %}" class="badge text-bg-light">
+      {{ tag.name }}
+    </a>
+  {% endfor %}
+</aside>

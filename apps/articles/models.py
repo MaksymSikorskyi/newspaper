@@ -8,16 +8,6 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
 
-class PublishedArticlesManager(models.Manager):
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(published_at__isnull=False)
-            .order_by("-published_at")
-        )
-
-
 class Category(models.Model):
     name = models.CharField(_("name"), max_length=100)
     slug = AutoSlugField(populate_from="name", unique=True, slugify_function=slugify)
@@ -38,6 +28,19 @@ class Category(models.Model):
     def __repr__(self) -> str:
         return "<Category id={} name={} slug={} created_at={}>".format(
             self.pk, self.name, self.slug, self.created_at
+        )
+
+    def get_absolute_url(self):
+        return reverse("articles:by-category", kwargs={"slug": self.slug})
+
+
+class PublishedArticlesManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(published_at__isnull=False)
+            .order_by("-published_at")
         )
 
 
@@ -66,8 +69,10 @@ class Article(models.Model):
     )
     short_content = models.TextField(_("short content"), max_length=600)
     content = models.TextField(_("content"))
+    view_count = models.PositiveIntegerField(_("view count"), default=0, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     tags = TaggableManager()
     objects = models.Manager()
     published = PublishedArticlesManager()
@@ -110,7 +115,6 @@ class Article(models.Model):
     def get_absolute_url(self):
         if self.published_at is None:
             return reverse("articles:list")
-
         return reverse(
             "articles:detail",
             kwargs={
@@ -138,7 +142,6 @@ class ArticleImage(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     image_thumbnail = ImageSpecField(
         source="image",
         processors=[ResizeToFill(450, 300)],
